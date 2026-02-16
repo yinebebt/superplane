@@ -18,6 +18,9 @@ import { onAlarmTriggerRenderer } from "./cloudwatch/on_alarm";
 import { createRecordMapper } from "./route53/create_record";
 import { upsertRecordMapper } from "./route53/upsert_record";
 import { deleteRecordMapper } from "./route53/delete_record";
+import { describeServiceMapper } from "./ecs/describe_service";
+import { runTaskMapper } from "./ecs/run_task";
+import { stopTaskMapper } from "./ecs/stop_task";
 import { onTopicMessageTriggerRenderer } from "./sns/on_topic_message";
 import { createTopicMapper } from "./sns/create_topic";
 import { deleteTopicMapper } from "./sns/delete_topic";
@@ -27,6 +30,9 @@ import { publishMessageMapper } from "./sns/publish_message";
 
 export const componentMappers: Record<string, ComponentBaseMapper> = {
   "lambda.runFunction": runFunctionMapper,
+  "ecs.describeService": describeServiceMapper,
+  "ecs.runTask": runTaskMapper,
+  "ecs.stopTask": stopTaskMapper,
   "ecr.getImage": getImageMapper,
   "ecr.getImageScanFindings": getImageScanFindingsMapper,
   "ecr.scanImage": scanImageMapper,
@@ -56,6 +62,9 @@ export const triggerRenderers: Record<string, TriggerRenderer> = {
 };
 
 export const eventStateRegistry: Record<string, EventStateRegistry> = {
+  "ecs.describeService": buildActionStateRegistry("described"),
+  "ecs.runTask": buildActionStateRegistry("started"),
+  "ecs.stopTask": buildActionStateRegistry("stopped"),
   "ecr.getImage": buildActionStateRegistry("retrieved"),
   "ecr.getImageScanFindings": buildActionStateRegistry("retrieved"),
   "ecr.scanImage": buildActionStateRegistry("scanned"),
