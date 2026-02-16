@@ -956,11 +956,19 @@ The Create DNS Record component creates a new DNS record in an AWS Route 53 host
 
 ```json
 {
-  "changeId": "/change/C1234567890ABC",
-  "recordName": "api.example.com",
-  "recordType": "A",
-  "status": "PENDING",
-  "submittedAt": "2026-01-28T10:30:00.000Z"
+  "data": {
+    "change": {
+      "id": "/change/C1234567890ABC",
+      "status": "INSYNC",
+      "submittedAt": "2026-01-28T10:30:00.000Z"
+    },
+    "record": {
+      "name": "api.example.com",
+      "type": "A"
+    }
+  },
+  "timestamp": "2026-01-28T10:30:00.000Z",
+  "type": "aws.route53.change"
 }
 ```
 
@@ -987,11 +995,19 @@ The Delete DNS Record component deletes a DNS record from an AWS Route 53 hosted
 
 ```json
 {
-  "changeId": "/change/C5555555555GHI",
-  "recordName": "old.example.com",
-  "recordType": "A",
-  "status": "PENDING",
-  "submittedAt": "2026-01-28T10:30:00.000Z"
+  "data": {
+    "change": {
+      "id": "/change/C5555555555GHI",
+      "status": "INSYNC",
+      "submittedAt": "2026-01-28T10:30:00.000Z"
+    },
+    "record": {
+      "name": "api.example.com",
+      "type": "A"
+    }
+  },
+  "timestamp": "2026-01-28T10:30:00.000Z",
+  "type": "aws.route53.change"
 }
 ```
 
@@ -1017,11 +1033,19 @@ The Upsert DNS Record component creates or updates a DNS record in an AWS Route 
 
 ```json
 {
-  "changeId": "/change/C9876543210DEF",
-  "recordName": "app.example.com",
-  "recordType": "CNAME",
-  "status": "PENDING",
-  "submittedAt": "2026-01-28T10:30:00.000Z"
+  "data": {
+    "change": {
+      "id": "/change/C9876543210DEF",
+      "status": "INSYNC",
+      "submittedAt": "2026-01-28T10:30:00.000Z"
+    },
+    "record": {
+      "name": "api.example.com",
+      "type": "A"
+    }
+  },
+  "timestamp": "2026-01-28T10:30:00.000Z",
+  "type": "aws.route53.change"
 }
 ```
 
