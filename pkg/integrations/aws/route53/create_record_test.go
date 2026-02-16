@@ -425,7 +425,7 @@ func TestCreateRecord_HandleAction(t *testing.T) {
 		require.NoError(t, err)
 		require.Len(t, execState.Payloads, 1)
 		require.True(t, execState.Passed)
-		require.Equal(t, "aws.route53.record", execState.Type)
+		require.Equal(t, "aws.route53.change", execState.Type)
 		payload := execState.Payloads[0].(map[string]any)
 		data, ok := payload["data"].(map[string]any)
 		require.True(t, ok)
