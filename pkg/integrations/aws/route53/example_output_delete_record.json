@@ -1,7 +1,15 @@
 {
-  "changeId": "/change/C5555555555GHI",
-  "status": "PENDING",
-  "submittedAt": "2026-01-28T10:30:00.000Z",
-  "recordName": "old.example.com",
-  "recordType": "A"
+  "data": {
+    "change": {
+      "id": "/change/C5555555555GHI",
+      "status": "INSYNC",
+      "submittedAt": "2026-01-28T10:30:00.000Z"
+    },
+    "record": {
+      "name": "api.example.com",
+      "type": "A"
+    }
+  },
+  "timestamp": "2026-01-28T10:30:00.000Z",
+  "type": "aws.route53.change"
 }

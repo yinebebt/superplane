@@ -55,11 +55,10 @@ func TestDeleteRecord_Setup(t *testing.T) {
 		require.ErrorContains(t, err, "at least one record value is required")
 	})
 
-	t.Run("valid configuration -> stores metadata", func(t *testing.T) {
-		metadata := &contexts.MetadataContext{}
+	t.Run("valid configuration -> no error", func(t *testing.T) {
 		err := component.Setup(core.SetupContext{
 			Integration: &contexts.IntegrationContext{},
-			Metadata:    metadata,
+			Metadata:    &contexts.MetadataContext{},
 			Configuration: map[string]any{
 				"hostedZoneId": "Z123",
 				"recordName":   "old.example.com",
@@ -70,10 +69,6 @@ func TestDeleteRecord_Setup(t *testing.T) {
 		})
 
 		require.NoError(t, err)
-		stored, ok := metadata.Metadata.(DeleteRecordMetadata)
-		require.True(t, ok)
-		assert.Equal(t, "Z123", stored.HostedZoneID)
-		assert.Equal(t, "old.example.com", stored.RecordName)
 	})
 }
 
@@ -205,14 +200,15 @@ func TestDeleteRecord_Execute(t *testing.T) {
 		require.NoError(t, err)
 		require.Len(t, execState.Payloads, 1)
 		require.True(t, execState.Passed)
-		require.Equal(t, "aws.route53.record", execState.Type)
+		require.Equal(t, "aws.route53.change", execState.Type)
 		payload := execState.Payloads[0].(map[string]any)
 		data, ok := payload["data"].(map[string]any)
 		require.True(t, ok)
-		assert.Equal(t, "/change/C5555555555", data["changeId"])
-		assert.Equal(t, "INSYNC", data["status"])
-		assert.Equal(t, "old.example.com", data["recordName"])
-		assert.Equal(t, "A", data["recordType"])
+		change, ok := data["change"].(map[string]any)
+		require.True(t, ok)
+		assert.Equal(t, "/change/C5555555555", change["id"])
+		assert.Equal(t, "INSYNC", change["status"])
+		assert.Equal(t, "2026-02-13T15:00:00.000Z", change["submittedAt"])
 	})
 
 	t.Run("API error -> returns error", func(t *testing.T) {

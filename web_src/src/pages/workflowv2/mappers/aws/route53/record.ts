@@ -23,11 +23,19 @@ export interface RecordConfiguration {
 }
 
 export interface RecordChangePayload {
-  changeId?: string;
+  change?: Change;
+  record?: ResourceRecord;
+}
+
+export interface Change {
+  id?: string;
   status?: string;
   submittedAt?: string;
-  recordName?: string;
-  recordType?: string;
+}
+
+export interface ResourceRecord {
+  name?: string;
+  type?: string;
 }
 
 function recordMetadataList(node: NodeInfo): MetadataItem[] {
@@ -91,11 +99,11 @@ export const recordMapper: ComponentBaseMapper = {
     }
 
     return {
-      "Record Name": stringOrDash(data.recordName),
-      "Record Type": stringOrDash(data.recordType),
-      "Change ID": stringOrDash(data.changeId),
-      Status: stringOrDash(data.status),
-      "Submitted At": stringOrDash(data.submittedAt),
+      "Record Name": stringOrDash(data.record?.name),
+      "Record Type": stringOrDash(data.record?.type),
+      "Change ID": stringOrDash(data.change?.id),
+      Status: stringOrDash(data.change?.status),
+      "Submitted At": stringOrDash(data.change?.submittedAt),
     };
   },
 

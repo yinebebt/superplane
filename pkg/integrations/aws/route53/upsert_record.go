@@ -22,11 +22,6 @@ type UpsertRecordConfiguration struct {
 	Values       []string `json:"values" mapstructure:"values"`
 }
 
-type UpsertRecordMetadata struct {
-	HostedZoneID string `json:"hostedZoneId" mapstructure:"hostedZoneId"`
-	RecordName   string `json:"recordName" mapstructure:"recordName"`
-}
-
 func (c *UpsertRecord) Name() string {
 	return "aws.route53.upsertRecord"
 }
@@ -79,14 +74,7 @@ func (c *UpsertRecord) Setup(ctx core.SetupContext) error {
 	}
 
 	config = c.normalizeConfig(config)
-	if err := validateRecordConfiguration(config.HostedZoneID, config.RecordName, config.RecordType, config.Values); err != nil {
-		return err
-	}
-
-	return ctx.Metadata.Set(UpsertRecordMetadata{
-		HostedZoneID: config.HostedZoneID,
-		RecordName:   config.RecordName,
-	})
+	return validateRecordConfiguration(config.HostedZoneID, config.RecordName, config.RecordType, config.Values)
 }
 
 func (c *UpsertRecord) ProcessQueueItem(ctx core.ProcessQueueContext) (*uuid.UUID, error) {
@@ -118,15 +106,19 @@ func (c *UpsertRecord) Execute(ctx core.ExecutionContext) error {
 
 	if result.Status == "INSYNC" {
 		output := map[string]any{
-			"changeId":    result.ID,
-			"status":      result.Status,
-			"submittedAt": result.SubmittedAt,
-			"recordName":  config.RecordName,
-			"recordType":  config.RecordType,
+			"change": map[string]any{
+				"id":          result.ID,
+				"status":      result.Status,
+				"submittedAt": result.SubmittedAt,
+			},
+			"record": map[string]any{
+				"name": config.RecordName,
+				"type": config.RecordType,
+			},
 		}
 		return ctx.ExecutionState.Emit(
 			core.DefaultOutputChannel.Name,
-			"aws.route53.record",
+			"aws.route53.change",
 			[]any{output},
 		)
 	}

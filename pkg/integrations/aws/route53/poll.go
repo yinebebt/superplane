@@ -33,18 +33,27 @@ func pollChangeUntilSynced(ctx core.ActionContext) error {
 		return fmt.Errorf("failed to get change status: %w", err)
 	}
 
+	submittedAt := change.SubmittedAt
+	if submittedAt == "" {
+		submittedAt = meta.SubmittedAt
+	}
+
 	output := map[string]any{
-		"changeId":    change.ID,
-		"status":      change.Status,
-		"submittedAt": meta.SubmittedAt,
-		"recordName":  meta.RecordName,
-		"recordType":  meta.RecordType,
+		"change": map[string]any{
+			"id":          change.ID,
+			"status":      change.Status,
+			"submittedAt": submittedAt,
+		},
+		"record": map[string]any{
+			"name": meta.RecordName,
+			"type": meta.RecordType,
+		},
 	}
 
 	if change.Status == "INSYNC" {
 		return ctx.ExecutionState.Emit(
 			core.DefaultOutputChannel.Name,
-			"aws.route53.record",
+			"aws.route53.change",
 			[]any{output},
 		)
 	}
